@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STEADI Weight-Loss Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FFFFFF;
+    --paper-raised:#F2FBFC;
+    --ink:#16282C;
+    --ink-soft:#5C7377;
+    --line:#D8EEF1;
+    --line-strong:#A9DDE3;
+    --accent:#1CA7C2;
+    --accent-soft:#DCF2F5;
+    --marigold:#E8A93D;
+    --marigold-strong:#D3941F;
+    --profile-accent:#1CA7C2;
+    --profile-soft:#DCF2F5;
+    --danger:#9C4B3C;
+    --radius:14px;
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --paper:#111B1D;
+      --paper-raised:#16282C;
+      --ink:#EAF6F7;
+      --ink-soft:#9BB4B8;
+      --line:#243B3F;
+      --line-strong:#33555B;
+      --accent-soft:#1B3238;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#111B1D;
+    --paper-raised:#16282C;
+    --ink:#EAF6F7;
+    --ink-soft:#9BB4B8;
+    --line:#243B3F;
+    --line-strong:#33555B;
+    --accent-soft:#1B3238;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:32px 18px 60px;
+  }
+  h1,h2,h3{
+    font-family:'Source Serif 4', Georgia, serif;
+    font-weight:500;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .app{
+    width:100%;
+    max-width:600px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:34px;
+    min-height:20px;
+  }
+  .track{
+    flex:1;
+    height:3px;
+    background:var(--line);
+    border-radius:2px;
+    overflow:hidden;
+  }
+  .track-fill{
+    height:100%;
+    background:var(--accent);
+    width:0%;
+    transition:width .45s cubic-bezier(.4,0,.2,1);
+  }
+  .track-label{
+    font-size:13px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    font-variant-numeric:tabular-nums;
+  }
+
+  /* ---------- intro ---------- */
+  .intro{
+    text-align:left;
+  }
+  .intro .eyebrow{
+    font-size:14px;
+    color:var(--accent);
+    margin-bottom:14px;
+  }
+  .intro h1{
+    font-size:36px;
+    line-height:1.15;
+    margin-bottom:16px;
+    max-width:16ch;
+  }
+  .intro p.lede{
+    font-size:17px;
+    line-height:1.55;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin-bottom:28px;
+  }
+  .meta-row{
+    display:flex;
+    gap:22px;
+    margin-bottom:32px;
+    padding:18px 0;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .meta-item{
+    font-size:13.5px;
+    color:var(--ink-soft);
+  }
+  .meta-item strong{
+    display:block;
+    color:var(--ink);
+    font-size:15px;
+    font-weight:500;
+    margin-bottom:2px;
+  }
+  .disclaimer{
+    font-size:13px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    margin-bottom:30px;
+  }
+
+  .email-gate{
+    margin-bottom:26px;
+  }
+  .email-gate label{
+    display:block;
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .email-gate input{
+    width:100%;
+    font-family:inherit;
+    font-size:16px;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:var(--paper-raised);
+    color:var(--ink);
+    outline:none;
+  }
+  .email-gate input:focus{ border-color:var(--accent); }
+  .email-gate input.invalid{ border-color:var(--danger); }
+  .email-gate .email-hint{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:8px;
+  }
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:inherit;
+    font-size:15.5px;
+    font-weight:500;
+    padding:13px 24px;
+    border-radius:999px;
+    border:none;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn:active{ transform:scale(0.97); }
+  .btn-primary{
+    background:var(--marigold);
+    color:var(--ink);
+  }
+  .btn-primary:hover{ background:var(--marigold-strong); }
+  .btn-primary:disabled{
+    background:var(--line-strong);
+    color:var(--paper-raised);
+    cursor:not-allowed;
+    transform:none;
+  }
+  .btn-ghost{
+    background:transparent;
+    color:var(--ink-soft);
+    border:1px solid var(--line);
+  }
+  .btn-ghost:hover{ border-color:var(--line-strong); color:var(--ink); }
+  .btn-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:30px;
+  }
+
+  /* ---------- questions ---------- */
+  .q-wrap{ min-height:360px; }
+  .q-part{
+    font-size:13px;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  .q-prompt{
+    font-size:23px;
+    line-height:1.35;
+    margin-bottom:6px;
+    max-width:26ch;
+  }
+  .q-sub{
+    font-size:14.5px;
+    color:var(--ink-soft);
+    margin-bottom:22px;
+  }
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+  }
+  .option{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--accent);
+    color:#ffffff;
+    cursor:pointer;
+    font-size:15.5px;
+    line-height:1.4;
+    transition:border-color .15s ease, background .15s ease;
+    text-align:left;
+  }
+  .option:hover{ border-color:var(--line-strong); background:var(--accent); filter:brightness(1.06); }
+  .option .dot{
+    flex:none;
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    border:1.5px solid rgba(255,255,255,0.6);
+    position:relative;
+  }
+  .option.checkbox .dot{ border-radius:5px; }
+  .option.selected{
+    border-color:var(--marigold);
+    background:var(--marigold-strong);
+  }
+  .option.selected .dot{
+    border-color:#ffffff;
+    background:#ffffff;
+  }
+  .option.selected .dot::after{
+    content:"";
+    position:absolute;
+    inset:4px;
+    border-radius:50%;
+    background:var(--marigold-strong);
+  }
+  .option.checkbox.selected .dot::after{
+    inset:0;
+    border-radius:3px;
+    background:transparent;
+    border:none;
+    content:"✓";
+    color:#ffffff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+  }
+
+  /* slider question */
+  .slider-wrap{ padding:10px 4px 4px; }
+  .slider-value{
+    font-family:'Source Serif 4', serif;
+    font-size:44px;
+    margin-bottom:6px;
+  }
+  .slider-caption{
+    display:flex;
+    justify-content:space-between;
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:8px;
+  }
+  input[type="range"]{
+    width:100%;
+    accent-color:var(--accent);
+    height:4px;
+  }
+
+  .hint{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    margin-top:16px;
+  }
+
+  /* ---------- results ---------- */
+  .result{
+    text-align:left;
+  }
+  .badge-row{
+    display:flex;
+    justify-content:center;
+    margin-bottom:26px;
+  }
+  .badge-row .badge-backdrop{
+    width:168px;
+    height:168px;
+    border-radius:50%;
+    background:var(--profile-soft);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .badge{
+    width:132px;
+    height:132px;
+  }
+  .result .eyebrow{
+    font-size:13px;
+    text-align:center;
+    color:var(--profile-accent);
+    margin-bottom:8px;
+  }
+  .result h1{
+    font-size:30px;
+    text-align:center;
+    margin-bottom:12px;
+  }
+  .result .tagline{
+    text-align:center;
+    font-size:17px;
+    color:var(--ink-soft);
+    max-width:36ch;
+    margin:0 auto 30px;
+    line-height:1.5;
+  }
+  .result-section{
+    margin-bottom:26px;
+  }
+  .result-section h3{
+    font-size:14px;
+    color:var(--ink-soft);
+    font-weight:500;
+    margin-bottom:10px;
+  }
+  .result-body p{
+    font-size:15.5px;
+    line-height:1.65;
+    margin:0 0 14px;
+    color:var(--ink);
+  }
+  .strengths{
+    list-style:none;
+    padding:0;
+    margin:0;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .strengths li{
+    display:flex;
+    gap:10px;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .strengths li .mark{
+    flex:none;
+    color:var(--profile-accent);
+    font-weight:600;
+  }
+  .steps{
+    list-style:none;
+    padding:0;
+    margin:0;
+    counter-reset:step;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+    border-top:1px solid var(--line);
+  }
+  .steps li{
+    counter-increment:step;
+    display:flex;
+    gap:14px;
+    padding:13px 0;
+    border-bottom:1px solid var(--line);
+    font-size:15px;
+    line-height:1.5;
+  }
+  .steps li::before{
+    content:counter(step);
+    flex:none;
+    width:24px;
+    height:24px;
+    border-radius:50%;
+    background:var(--profile-soft);
+    color:var(--profile-accent);
+    font-size:12.5px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .domain-bars{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .domain-row{
+    display:grid;
+    grid-template-columns:120px 1fr 34px;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+  }
+  .domain-row .dlabel{ color:var(--ink-soft); }
+  .domain-row .dtrack{
+    height:6px;
+    background:var(--line);
+    border-radius:3px;
+    overflow:hidden;
+  }
+  .domain-row .dfill{
+    height:100%;
+    background:var(--ink-soft);
+    border-radius:3px;
+  }
+  .domain-row.dominant .dfill{ background:var(--profile-accent); }
+  .domain-row.dominant .dlabel{ color:var(--ink); font-weight:500; }
+  .domain-row .dval{ text-align:right; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+
+  .flag-note{
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    background:var(--paper-raised);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:14px 16px;
+    margin-bottom:26px;
+  }
+
+  .cta-block{
+    background:var(--accent);
+    color:#ffffff;
+    border-radius:var(--radius);
+    padding:26px 24px;
+    margin-top:8px;
+    text-align:center;
+  }
+  .cta-block h3{
+    font-family:'Source Serif 4', serif;
+    font-size:19px;
+    font-weight:500;
+    color:#ffffff;
+    margin-bottom:8px;
+  }
+  .cta-block p{
+    font-size:14px;
+    color:#DFF6FA;
+    margin:0 0 18px;
+    line-height:1.5;
+  }
+  .cta-block .btn-primary{
+    background:var(--marigold);
+    color:var(--ink);
+    width:100%;
+    justify-content:center;
+  }
+  .cta-block .btn-primary:hover{ background:var(--marigold-strong); }
+
+  .restart-row{
+    text-align:center;
+    margin-top:22px;
+  }
+  .restart-row button{
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    text-decoration:underline;
+    cursor:pointer;
+    font-family:inherit;
+  }
+
+  @media (max-width:480px){
+    .intro h1{ font-size:29px; }
+    .q-prompt{ font-size:20px; }
+    .meta-row{ gap:14px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  [data-fade]{
+    animation:fadeIn .35s ease both;
+  }
+  @keyframes fadeIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+(function(){
+
+/* ============ QUESTION DATA ============ */
+/* domain keys: appetite, lifestyle, movement, cycling, emotional */
+
+const questions = [
+  {
+    id:1, part:"Part 1 · Your goal", type:"single", noScore:true,
+    prompt:"What's your main goal right now?",
+    options:[
+      {label:"Lose a few kilos", value:"a-few"},
+      {label:"Lose 5–10 kg", value:"5-10"},
+      {label:"Lose more than 10 kg", value:"10-plus"},
+      {label:"Reduce my waist / body fat", value:"waist"},
+      {label:"Improve my health or metabolic markers", value:"health"},
+      {label:"Lose weight and keep it off", value:"keep-off"},
+      {label:"I'm not sure yet", value:"unsure"},
+    ]
+  },
+  {
+    id:2, part:"Part 1 · Your goal", type:"single",
+    prompt:"How long have you been trying to lose weight?",
+    domain:"cycling",
+    options:[
+      {label:"Less than 3 months", pts:0},
+      {label:"3–6 months", pts:1},
+      {label:"6–12 months", pts:2},
+      {label:"1–3 years", pts:3},
+      {label:"On and off for many years", pts:4},
+    ]
+  },
+  {
+    id:3, part:"Part 2 · Appetite", type:"single",
+    prompt:"How often do you feel genuinely hungry between meals?",
+    domain:"appetite",
+    options:[
+      {label:"Rarely", pts:0},{label:"Occasionally", pts:1},
+      {label:"Several times a week", pts:2},{label:"Almost every day", pts:3},
+      {label:"Multiple times a day", pts:4},
+    ]
+  },
+  {
+    id:4, part:"Part 2 · Appetite", type:"single",
+    prompt:"How difficult is it to stop eating once you start?",
+    domain:"appetite",
+    options:[
+      {label:"Very easy", pts:0},{label:"Usually easy", pts:1},
+      {label:"Sometimes difficult", pts:2},{label:"Often difficult", pts:3},
+      {label:"Very difficult", pts:4},
+    ]
+  },
+  {
+    id:5, part:"Part 2 · Appetite", type:"single",
+    prompt:"How often do you experience strong cravings?",
+    domain:"appetite",
+    options:[
+      {label:"Rarely", pts:0},{label:"Occasionally", pts:1},
+      {label:"Several times a week", pts:2},{label:"Almost daily", pts:3},
+      {label:"Multiple times a day", pts:4},
+    ]
+  },
+  {
+    id:6, part:"Part 3 · Your eating environment", type:"single",
+    prompt:"Which best describes your typical eating pattern?",
+    domain:"lifestyle",
+    options:[
+      {label:"Structured meals, I rarely snack", pts:0},
+      {label:"Mostly structured, occasionally inconsistent", pts:1},
+      {label:"I frequently snack between meals", pts:2},
+      {label:"I skip meals and tend to overeat later", pts:3},
+      {label:"My eating is highly inconsistent", pts:3},
+      {label:"I often eat because I'm stressed, bored, or emotional", pts:4, emotional:4},
+    ]
+  },
+  {
+    id:7, part:"Part 3 · Your eating environment", type:"single",
+    prompt:"How often do you eat restaurant, fast food, delivery, or convenience food?",
+    domain:"lifestyle",
+    options:[
+      {label:"Less than once a week", pts:0},{label:"1–2 times a week", pts:1},
+      {label:"3–4 times a week", pts:2},{label:"5–6 times a week", pts:3},
+      {label:"Almost every day", pts:4},
+    ]
+  },
+  {
+    id:8, part:"Part 3 · Your eating environment", type:"slider",
+    prompt:"How confident are you that you know approximately how much you're eating?",
+    sub:"0 = I have no idea · 10 = I have a very good understanding",
+    domain:"lifestyle",
+    min:0, max:10,
+    scoreFn:(v)=> v>=8?0 : v>=6?1 : v>=4?2 : v>=2?3 : 4
+  },
+  {
+    id:9, part:"Part 4 · Movement & muscle", type:"single",
+    prompt:"On a typical day, how active are you?",
+    domain:"movement",
+    options:[
+      {label:"Mostly sitting, very little walking", pts:4},
+      {label:"Some walking, but mostly sedentary", pts:3},
+      {label:"Moderately active", pts:2},
+      {label:"Active most days", pts:1},
+      {label:"Very active", pts:0},
+    ]
+  },
+  {
+    id:10, part:"Part 4 · Movement & muscle", type:"single",
+    prompt:"How often do you do resistance or strength training?",
+    domain:"movement",
+    options:[
+      {label:"Never", pts:4},{label:"Less than once a week", pts:3},
+      {label:"1–2 times a week", pts:1},{label:"3+ times a week", pts:0},
+    ]
+  },
+  {
+    id:11, part:"Part 5 · Sleep & stress", type:"single",
+    prompt:"How many hours do you usually sleep per night?",
+    domain:"lifestyle",
+    options:[
+      {label:"Less than 5 hours", pts:4},{label:"5–6 hours", pts:3},
+      {label:"6–7 hours", pts:1},{label:"7–9 hours", pts:0},
+      {label:"More than 9 hours", pts:1},
+    ]
+  },
+  {
+    id:12, part:"Part 5 · Sleep & stress", type:"single",
+    prompt:"How often does stress affect what or how much you eat?",
+    domain:"emotional",
+    options:[
+      {label:"Almost never", pts:0},{label:"Occasionally", pts:1},
+      {label:"Sometimes", pts:2},{label:"Often", pts:3},{label:"Very often", pts:4},
+    ]
+  },
+  {
+    id:13, part:"Part 6 · Your weight history", type:"single",
+    prompt:"What usually happens after you successfully lose weight?",
+    domain:"cycling",
+    options:[
+      {label:"I generally maintain it", pts:0},
+      {label:"I regain a little", pts:1},
+      {label:"I regain most of it", pts:3},
+      {label:"I regain all of it", pts:4},
+      {label:"I repeatedly lose and regain weight", pts:5},
+    ]
+  },
+  {
+    id:14, part:"Part 7 · Medical context", type:"multi", noScore:true, flagsMedical:true,
+    prompt:"Do you currently have any of the following?",
+    sub:"Select all that apply.",
+    options:[
+      {label:"Prediabetes", value:"prediabetes"},
+      {label:"Diabetes", value:"diabetes"},
+      {label:"High blood pressure", value:"bp"},
+      {label:"High cholesterol / triglycerides", value:"cholesterol"},
+      {label:"Fatty liver", value:"liver"},
+      {label:"PCOS", value:"pcos"},
+      {label:"Sleep apnea", value:"apnea"},
+      {label:"Thyroid condition", value:"thyroid"},
+      {label:"None of the above", value:"none", exclusive:true},
+      {label:"I'm not sure", value:"unsure", exclusive:true},
+    ]
+  },
+  {
+    id:15, part:"Part 8 · What you really want", type:"multi", noScore:true, maxSelect:2,
+    prompt:"What's your biggest frustration with weight loss?",
+    sub:"Choose up to 2.",
+    options:[
+      {label:"I'm hungry all the time", value:"hungry"},
+      {label:"I have strong cravings", value:"cravings"},
+      {label:"I struggle with portions", value:"portions"},
+      {label:"I eat when I'm stressed or bored", value:"stress"},
+      {label:"I don't have enough time", value:"time"},
+      {label:"I struggle to exercise consistently", value:"exercise"},
+      {label:"I lose weight but regain it", value:"regain"},
+      {label:"I feel like I'm doing everything right but not losing", value:"stuck"},
+      {label:"I'm worried about my health", value:"health"},
+      {label:"I don't know where to start", value:"start"},
+    ]
+  },
+];
+
+const DOMAIN_MAX = { appetite:12, lifestyle:16, movement:8, cycling:9, emotional:8 };
+const DOMAIN_LABEL = { appetite:"Appetite", lifestyle:"Lifestyle & environment", movement:"Movement & muscle", cycling:"Weight cycling", emotional:"Emotional eating" };
+
+/* ============ PROFILES ============ */
+
+const profiles = {
+  appetite: {
+    key:"appetite",
+    accent:"#C9663A", soft:"#FBE3D2",
+    name:"The Appetite Challenger",
+    tagline:"Your biggest challenge may be appetite — not knowledge.",
+    body:[
+      "Based on your answers, hunger and/or cravings appear to be one of the biggest barriers standing between you and consistent weight loss.",
+      "You may find yourself thinking about food frequently, getting hungry between meals, experiencing strong cravings, or finding it difficult to stop eating once you start. That doesn't mean you've failed — appetite is influenced by many factors, including your eating pattern, sleep, stress, environment, and biology."
+    ],
+    strengths:[
+      "You recognize that appetite is affecting your progress",
+      "You've already taken the first step by looking for a structured approach"
+    ],
+    stepsIntro:"Try focusing on:",
+    steps:[
+      "Protein-rich meals",
+      "High-fiber, filling foods",
+      "Structured meals and snacks",
+      "Adequate sleep",
+      "Regular movement and resistance training"
+    ],
+    conditionNote:"For some patients, lifestyle intervention may not be enough on its own. Prescription weight-management medications may be considered after an individualized medical assessment.",
+    ctaLine:"Let's determine what's contributing to your weight-management difficulty and discuss which treatment options may be appropriate for you.",
+    badge: svgAppetite
+  },
+  cycling: {
+    key:"cycling",
+    accent:"#3E6E9C", soft:"#D9E7F3",
+    name:"The Yo-Yo Dieter",
+    tagline:"You've proven that you can lose weight. Your bigger challenge may be maintaining it.",
+    body:[
+      "Your answers suggest you've experienced repeated cycles of losing and regaining weight. This can be frustrating — and it can make you feel like every new diet has to be more restrictive than the last.",
+      "Instead, your focus may benefit from shifting from \u201chow quickly can I lose weight\u201d to \u201chow can I build a system I can maintain.\u201d"
+    ],
+    steps:[
+      "Avoid overly restrictive diets",
+      "Prioritize adequate protein and nutrition",
+      "Build sustainable activity habits",
+      "Monitor your weight trend rather than individual days",
+      "Develop a maintenance plan from the beginning"
+    ],
+    conditionNote:"If you've repeatedly struggled with weight management despite making lifestyle changes, a physician can help assess whether additional medical treatment may be appropriate.",
+    ctaLine:"Your history matters. Let's build a weight-management strategy around what has — and hasn't — worked for you before.",
+    badge: svgCycling
+  },
+  busy: {
+    key:"busy",
+    accent:"#B9862A", soft:"#F6E7C7",
+    name:"The Busy Professional",
+    tagline:"Your biggest barrier may be your environment — not your motivation.",
+    body:[
+      "Your answers suggest that time, schedule, convenience, sleep, or your daily environment may be making weight management difficult.",
+      "You may already know what healthy eating and exercise look like. The problem is fitting them into real life."
+    ],
+    stepsIntro:"Instead of trying to completely redesign your life, focus on:",
+    steps:[
+      "Simple repeatable meals",
+      "High-protein convenience options",
+      "Short, effective workouts",
+      "Planned restaurant/delivery choices",
+      "A realistic movement target",
+      "Better sleep where possible"
+    ],
+    afterSteps:"Remember: you don't need a perfect week. You need a system that works on your busy weeks, stressful weeks, and ordinary weeks.",
+    ctaLine:"We can look at your health, lifestyle, weight history and goals and build a plan that fits your actual life.",
+    badge: svgBusy
+  },
+  stressed: {
+    key:"stressed",
+    accent:"#7D5B9C", soft:"#E7DEF3",
+    name:"The Stressed Eater",
+    tagline:"Your relationship with food may be strongly influenced by stress and emotions.",
+    body:[
+      "Your answers suggest that stress, boredom, emotions, or difficult days may influence when and how much you eat.",
+      "This doesn't mean you lack discipline. Eating is influenced by both biology and environment — and stress can make healthy choices harder."
+    ],
+    stepsIntro:"Start by identifying:",
+    steps:[
+      "What happened?",
+      "What did I feel?",
+      "What did I eat?",
+      "Was I physically hungry?",
+      "What could I do differently next time?"
+    ],
+    afterSteps:"Don't aim for perfection. The goal is to understand your patterns and gradually create alternatives.",
+    conditionNote:"If emotional eating feels difficult to control or is causing significant distress, discussing it with an appropriate healthcare professional may be helpful.",
+    ctaLine:"We can look at the bigger picture — not just the number on the scale.",
+    badge: svgEmotional
+  },
+  foundation: {
+    key:"foundation",
+    accent:"#4C8F63", soft:"#DCEFE1",
+    name:"The Foundation Builder",
+    tagline:"You already have several habits working in your favor.",
+    body:[
+      "Your answers suggest that you have a relatively solid foundation for weight management.",
+      "That doesn't mean weight loss will automatically be easy. It means you have some useful habits to build on."
+    ],
+    stepsIntro:"Focus on:",
+    steps:[
+      "A modest, sustainable calorie deficit",
+      "Adequate protein",
+      "Resistance training",
+      "Regular daily movement",
+      "Consistent sleep",
+      "Monitoring your progress over time"
+    ],
+    conditionNote:"If you're already doing these things consistently and still struggling to reach a healthy weight, a physician can help determine whether there are medical, medication-related, metabolic, or other factors worth evaluating.",
+    ctaLine:"Let's look beyond the scale and determine what approach makes sense for you.",
+    badge: svgFoundation
+  },
+};
+
+/* ============ SVG BADGES (vibrant / cartoon) ============ */
+function svgWrap(inner){
+  return `<svg class="badge" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+
+// 1. Appetite Challenger — a big-eyed "hungry blob" monster
+function svgAppetite(){
+  return svgWrap(`
+    <g stroke="#2B2118" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M60 12 C88 12 104 34 104 58 C104 86 86 106 60 106 C34 106 16 86 16 58 C16 34 32 12 60 12 Z" fill="#FF9640"/>
+      <ellipse cx="60" cy="78" rx="26" ry="16" fill="#FFC98A" stroke="none"/>
+      <path d="M8 44 C4 40 4 32 10 28" fill="none" stroke-width="3.5"/>
+      <path d="M18 30 C14 24 16 16 22 12" fill="none" stroke-width="3.5"/>
+      <path d="M112 44 C116 40 116 32 110 28" fill="none" stroke-width="3.5"/>
+      <path d="M102 30 C106 24 104 16 98 12" fill="none" stroke-width="3.5"/>
+      <circle cx="43" cy="54" r="12" fill="#FFFFFF"/>
+      <circle cx="77" cy="54" r="12" fill="#FFFFFF"/>
+      <circle cx="46" cy="56" r="5.5" fill="#2B2118" stroke="none"/>
+      <circle cx="80" cy="56" r="5.5" fill="#2B2118" stroke="none"/>
+      <path d="M46 80 C52 92 68 92 74 80 C68 86 52 86 46 80 Z" fill="#C9432E"/>
+      <circle cx="30" cy="70" r="6" fill="#FFB4A8" stroke="none"/>
+      <circle cx="90" cy="70" r="6" fill="#FFB4A8" stroke="none"/>
+    </g>
+  `);
+}
+
+// 2. Yo-Yo Dieter — a bouncing cartoon yo-yo with a smile
+function svgCycling(){
+  return svgWrap(`
+    <g stroke="#1E2B3B" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M60 8 C64 24 40 30 40 46 C40 58 78 58 78 46 C78 30 56 24 60 8" fill="none" stroke-width="3" stroke-dasharray="1 7"/>
+      <circle cx="60" cy="72" r="34" fill="#3FA3E0"/>
+      <circle cx="60" cy="72" r="34" fill="none"/>
+      <circle cx="60" cy="72" r="15" fill="#FFD34D"/>
+      <path d="M26 72 A34 34 0 0 1 94 72" fill="none" stroke="#2B79AE" stroke-width="3"/>
+      <circle cx="50" cy="68" r="4.5" fill="#1E2B3B" stroke="none"/>
+      <circle cx="70" cy="68" r="4.5" fill="#1E2B3B" stroke="none"/>
+      <path d="M48 82 C53 88 67 88 72 82" fill="none" stroke-width="3.5"/>
+      <path d="M14 96 C24 84 20 66 34 58" fill="none" stroke-width="3" stroke-dasharray="1 7"/>
+      <path d="M106 96 C96 84 100 66 86 58" fill="none" stroke-width="3" stroke-dasharray="1 7"/>
+    </g>
+  `);
+}
+
+// 3. Emotional Eater — a soft cloud character crying heart-shaped rain
+function svgEmotional(){
+  return svgWrap(`
+    <g stroke="#3B2A4A" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M30 60 a16 16 0 0 1 4 -31.6 a20 20 0 0 1 38 -6 a16 16 0 0 1 12 29.6 a14 14 0 0 1 -3 38 H36 a15 15 0 0 1 -6 -30 Z" fill="#B992D6"/>
+      <circle cx="46" cy="52" r="4.5" fill="#3B2A4A" stroke="none"/>
+      <circle cx="68" cy="52" r="4.5" fill="#3B2A4A" stroke="none"/>
+      <path d="M44 64 C50 60 62 60 68 64" fill="none" stroke-width="3.5"/>
+      <path d="M40 88 C40 82 46 78 46 72 C46 78 52 82 52 88 C52 92.5 48.5 96 46 96 C43.5 96 40 92.5 40 88 Z" fill="#E8607D"/>
+      <path d="M64 96 C64 90 70 86 70 80 C70 86 76 90 76 96 C76 100.5 72.5 104 70 104 C67.5 104 64 100.5 64 96 Z" fill="#E8607D"/>
+      <circle cx="94" cy="30" r="3.5" fill="#F4C56A" stroke="none"/>
+      <circle cx="102" cy="42" r="2.5" fill="#F4C56A" stroke="none"/>
+    </g>
+  `);
+}
+
+// 4. Busy Professional — a rushing alarm clock with a briefcase
+function svgBusy(){
+  return svgWrap(`
+    <g stroke="#4A3510" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M32 22 L20 12" fill="none" stroke-width="3.5"/>
+      <path d="M88 22 L100 12" fill="none" stroke-width="3.5"/>
+      <circle cx="60" cy="58" r="40" fill="#FFC93F"/>
+      <circle cx="60" cy="58" r="29" fill="#FFF3D0" stroke-width="3"/>
+      <path d="M60 58 L60 40" fill="none" stroke-width="3.5"/>
+      <path d="M60 58 L74 64" fill="none" stroke-width="3.5"/>
+      <circle cx="60" cy="58" r="3.5" fill="#4A3510" stroke="none"/>
+      <rect x="46" y="94" width="28" height="18" rx="3" fill="#E8703D" stroke-width="3"/>
+      <path d="M53 94 C53 88 67 88 67 94" fill="none" stroke-width="3"/>
+      <path d="M6 70 C10 66 10 60 6 56" fill="none" stroke-width="3"/>
+      <path d="M2 84 C7 81 7 74 2 70" fill="none" stroke-width="3"/>
+    </g>
+  `);
+}
+
+// 5. Foundation Builder — sturdy stacked blocks with a sprout on top
+function svgFoundation(){
+  return svgWrap(`
+    <g stroke="#1E3B29" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="22" y="78" width="76" height="26" rx="6" fill="#4CAF6E"/>
+      <rect x="32" y="50" width="56" height="26" rx="6" fill="#6FC98A"/>
+      <rect x="42" y="24" width="36" height="24" rx="6" fill="#9BDCB0"/>
+      <circle cx="53" cy="91" r="4.5" fill="#1E3B29" stroke="none"/>
+      <circle cx="67" cy="91" r="4.5" fill="#1E3B29" stroke="none"/>
+      <path d="M52 98 C56 102 64 102 68 98" fill="none" stroke-width="3.5"/>
+      <path d="M60 24 C60 14 68 10 68 10 C68 10 64 18 60 24" fill="#F4C56A" stroke-width="3"/>
+      <path d="M60 24 C60 16 52 12 52 12 C52 12 56 19 60 24" fill="#F4C56A" stroke-width="3"/>
+    </g>
+  `);
+}
+
+/* ============ CONFIG — edit these two lines ============ */
+// Google Sheets lead capture
+// Paste your deployed Google Apps Script Web App URL below (must end in /exec).
+const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxnxuZ3Por5jfpUWxuWEMt7cr3kkEdbcioA9v9i4X7Hv4YREaCwnKj0PwV4UV13epM/exec";
+
+// Optional: paste your booking/consultation link here.
+const BOOKING_URL = "https://docs.google.com/forms/d/e/1FAIpQLSdTpUdQFD1hfFj6gvr4OYkwTadrr-ZwkHq5iB0_xe8gPnvRgw/viewform";
+
+/* ============ STATE ============ */
+let step = -1; // -1 = intro
+let answers = {}; // id -> value / array / number
+let medicalFlag = false;
+let leadEmail = "";
+let emailSubmitted = false;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function sendEmailToSheet(email){
+  if(!email || !SHEET_WEBAPP_URL || SHEET_WEBAPP_URL.indexOf("PASTE_YOUR") === 0) return;
+
+  fetch(SHEET_WEBAPP_URL, {
+    method: "POST",
+    mode: "no-cors", // Apps Script web apps don't return CORS headers; fire-and-forget.
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids a CORS preflight
+    body: JSON.stringify({
+      email: email,
+      source: "STEADI Weight-Loss Assessment",
+      page: window.location.href
+    })
+  }).catch(()=>{ /* best-effort; don't block the assessment */ });
+}
+
+const app = document.getElementById('app');
+
+function totalQuestions(){ return questions.length; }
+
+function render(){
+  if(step === -1){ renderIntro(); return; }
+  if(step >= questions.length){ renderResult(); return; }
+  renderQuestion(questions[step]);
+}
+
+function renderIntro(){
+  app.innerHTML = `
+    <div class="intro" data-fade>
+      <div class="eyebrow">STEADI Weight-Loss Assessment</div>
+      <h1>What's really getting in the way of your weight loss?</h1>
+      <p class="lede">A 3-minute, physician-designed assessment to help you find your primary weight-loss barrier and a set of next steps that fit it.</p>
+      <div class="meta-row">
+        <div class="meta-item"><strong>15</strong>questions</div>
+        <div class="meta-item"><strong>~3 min</strong>to complete</div>
+        <div class="meta-item"><strong>5</strong>possible profiles</div>
+      </div>
+      <div class="disclaimer">This assessment is for educational purposes only. It does not diagnose medical conditions or determine whether prescription medication is appropriate for you. A physician consultation is required for individualized medical advice and treatment decisions.</div>
+      <div class="email-gate">
+        <label for="email-input">Your email</label>
+        <input type="email" id="email-input" placeholder="you@example.com" value="${leadEmail}" autocomplete="email">
+        <div class="email-hint">We'll send your results and next steps here.</div>
+      </div>
+      <button class="btn btn-primary" id="start-btn" ${EMAIL_RE.test(leadEmail) ? "" : "disabled"}>Start the assessment</button>
+    </div>
+  `;
+  const emailInput = document.getElementById('email-input');
+  const startBtn = document.getElementById('start-btn');
+  emailInput.addEventListener('input', (e)=>{
+    leadEmail = e.target.value.trim();
+    const valid = EMAIL_RE.test(leadEmail);
+    startBtn.disabled = !valid;
+    emailInput.classList.toggle('invalid', leadEmail.length > 0 && !valid);
+  });
+  startBtn.onclick = ()=>{
+    if(!emailSubmitted){
+      sendEmailToSheet(leadEmail);
+      emailSubmitted = true;
+    }
+    step = 0;
+    render();
+  };
+}
+
+function renderQuestion(q){
+  const answered = isAnswered(q);
+  let bodyHtml = "";
+
+  if(q.type === "slider"){
+    const val = answers[q.id] !== undefined ? answers[q.id] : Math.round((q.min+q.max)/2);
+    bodyHtml = `
+      <div class="slider-wrap">
+        <div class="slider-value">${val}</div>
+        <input type="range" min="${q.min}" max="${q.max}" step="1" value="${val}" id="slider-input">
+        <div class="slider-caption"><span>No idea</span><span>Very good understanding</span></div>
+      </div>
+    `;
+  } else {
+    bodyHtml = `<div class="options">` + q.options.map((opt,i)=>{
+      const isChecked = q.type === "multi"
+        ? (answers[q.id]||[]).includes(opt.value)
+        : answers[q.id] === i;
+      const cls = (q.type === "multi" ? "option checkbox" : "option") + (isChecked ? " selected" : "");
+      return `<button type="button" class="${cls}" data-i="${i}"><span class="dot"></span><span>${opt.label}</span></button>`;
+    }).join("") + `</div>`;
+  }
+
+  app.innerHTML = `
+    <div class="topbar">
+      <div class="track"><div class="track-fill" style="width:${(step/totalQuestions())*100}%"></div></div>
+      <div class="track-label">${step+1} of ${totalQuestions()}</div>
+    </div>
+    <div class="q-wrap" data-fade>
+      <div class="q-part">${q.part}</div>
+      <div class="q-prompt">${q.prompt}</div>
+      ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ""}
+      ${bodyHtml}
+      ${q.maxSelect ? `<div class="hint">Select up to ${q.maxSelect}.</div>` : ""}
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="back-btn" ${step===0 ? "style='visibility:hidden'" : ""}>Back</button>
+        <button class="btn btn-primary" id="next-btn" ${answered ? "" : "disabled"}>${step === questions.length-1 ? "See my results" : "Continue"}</button>
+      </div>
+    </div>
+  `;
+
+  if(q.type === "slider"){
+    const slider = document.getElementById('slider-input');
+    slider.addEventListener('input', (e)=>{
+      answers[q.id] = parseInt(e.target.value,10);
+      document.querySelector('.slider-value').textContent = e.target.value;
+      document.getElementById('next-btn').disabled = false;
+    });
+  } else {
+    document.querySelectorAll('.option').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const i = parseInt(btn.dataset.i,10);
+        const opt = q.options[i];
+        if(q.type === "multi"){
+          let cur = answers[q.id] || [];
+          if(opt.exclusive){
+            cur = cur.includes(opt.value) ? [] : [opt.value];
+          } else {
+            cur = cur.filter(v => !q.options.find(o=>o.value===v && o.exclusive));
+            if(cur.includes(opt.value)){
+              cur = cur.filter(v=>v!==opt.value);
+            } else {
+              if(q.maxSelect && cur.length >= q.maxSelect) cur.shift();
+              cur.push(opt.value);
+            }
+          }
+          answers[q.id] = cur;
+        } else {
+          answers[q.id] = i;
+        }
+        renderQuestion(q);
+      });
+    });
+  }
+
+  const backBtn = document.getElementById('back-btn');
+  if(backBtn) backBtn.onclick = ()=>{ step--; render(); };
+  document.getElementById('next-btn').onclick = ()=>{
+    if(q.flagsMedical){
+      const sel = answers[q.id] || [];
+      medicalFlag = sel.length > 0 && !sel.includes('none') && !sel.includes('unsure');
+    }
+    step++;
+    render();
+  };
+}
+
+function isAnswered(q){
+  if(q.type === "slider") return answers[q.id] !== undefined;
+  if(q.type === "multi") return (answers[q.id]||[]).length > 0;
+  return answers[q.id] !== undefined;
+}
+
+/* ============ SCORING ============ */
+function computeScores(){
+  const scores = { appetite:0, lifestyle:0, movement:0, cycling:0, emotional:0 };
+  questions.forEach(q=>{
+    if(q.noScore) return;
+    if(q.type === "slider"){
+      const v = answers[q.id];
+      if(v === undefined) return;
+      scores[q.domain] += q.scoreFn(v);
+    } else {
+      const i = answers[q.id];
+      if(i === undefined) return;
+      const opt = q.options[i];
+      scores[q.domain] += (opt.pts || 0);
+      if(opt.emotional) scores.emotional += opt.emotional;
+    }
+  });
+  return scores;
+}
+
+function pickProfile(scores){
+  const {appetite, lifestyle, movement, cycling, emotional} = scores;
+  if(appetite >= 7 && appetite > lifestyle && appetite > cycling){
+    return {profile:"appetite", domKey:"appetite"};
+  }
+  if(cycling >= 6){
+    return {profile:"cycling", domKey:"cycling"};
+  }
+  if(lifestyle >= 9){
+    return {profile:"busy", domKey:"lifestyle"};
+  }
+  if(emotional >= 6){
+    return {profile:"stressed", domKey:"emotional"};
+  }
+  return {profile:"foundation", domKey:null};
+}
+
+/* ============ RESULT ============ */
+function renderResult(){
+  const scores = computeScores();
+  const {profile:profKey, domKey} = pickProfile(scores);
+  const profile = profiles[profKey];
+  const order = ["appetite","cycling","emotional","lifestyle","movement"];
+
+  const barsHtml = order.map(k=>{
+    const pct = Math.round((scores[k]/DOMAIN_MAX[k])*100);
+    return `
+      <div class="domain-row ${k===domKey ? 'dominant':''}">
+        <div class="dlabel">${DOMAIN_LABEL[k]}</div>
+        <div class="dtrack"><div class="dfill" style="width:${pct}%"></div></div>
+        <div class="dval">${scores[k]}/${DOMAIN_MAX[k]}</div>
+      </div>
+    `;
+  }).join("");
+
+  app.innerHTML = `
+    <div class="result" data-fade style="--profile-accent:${profile.accent}; --profile-soft:${profile.soft};">
+      <div class="badge-row"><div class="badge-backdrop">${profile.badge(profile.accent)}</div></div>
+      <div class="eyebrow">Your STEADI Profile</div>
+      <h1>${profile.name}</h1>
+      <p class="tagline">${profile.tagline}</p>
+
+      <div class="result-section result-body">
+        ${profile.body.map(p=>`<p>${p}</p>`).join("")}
+      </div>
+
+      <div class="result-section">
+        <h3>Where your barriers are</h3>
+        <div class="domain-bars">${barsHtml}</div>
+      </div>
+
+      ${profile.strengths ? `
+      <div class="result-section">
+        <h3>Your strengths</h3>
+        <ul class="strengths">
+          ${profile.strengths.map(s=>`<li><span class="mark">✓</span><span>${s}</span></li>`).join("")}
+        </ul>
+      </div>` : ""}
+
+      <div class="result-section">
+        <h3>Your next steps</h3>
+        ${profile.stepsIntro ? `<p style="font-size:15px;color:var(--ink-soft);margin:0 0 10px;">${profile.stepsIntro}</p>` : ""}
+        <ul class="steps">
+          ${profile.steps.map(s=>`<li>${s}</li>`).join("")}
+        </ul>
+        ${profile.afterSteps ? `<p style="font-size:14.5px;line-height:1.6;color:var(--ink-soft);margin:14px 0 0;">${profile.afterSteps}</p>` : ""}
+      </div>
+
+      ${medicalFlag ? `<div class="flag-note">You indicated one or more existing health conditions. A physician can look at these alongside your results before recommending any next step.</div>` : ""}
+
+      ${profile.conditionNote ? `<div class="flag-note">${profile.conditionNote}</div>` : ""}
+
+      <div class="cta-block">
+        <h3>Book a physician consultation</h3>
+        <p>${profile.ctaLine}</p>
+        <button class="btn btn-primary" id="cta-btn">Book a consultation</button>
+      </div>
+
+      <div class="restart-row"><button id="restart-btn">Retake the assessment</button></div>
+    </div>
+  `;
+
+  document.getElementById('cta-btn').onclick = ()=>{
+    if(!BOOKING_URL || BOOKING_URL.indexOf("PASTE_YOUR") === 0){
+      alert("Add your booking link to BOOKING_URL near the top of the script to make this button work.");
+      return;
+    }
+    window.open(BOOKING_URL, "_blank");
+  };
+  document.getElementById('restart-btn').onclick = ()=>{
+    step = -1; answers = {}; medicalFlag = false; render();
+  };
+}
+
+render();
+})();
+</script>
+</body>
+</html>
